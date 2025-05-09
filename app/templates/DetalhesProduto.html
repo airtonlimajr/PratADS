@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adote um Pet</title>
+    <title>Detalhes do Produto</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Loja.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
     <script src="{{ url_for('static', filename='js/menu-mobile.js') }}"></script>
 </head>
 <body>
@@ -33,25 +32,16 @@
     <div class="menu-overlay" id="menu-overlay"></div>
 
     <main class="container">
-        <section class="produtos-list">
-            <h2>Produtos para seu pet</h2>
-            <div class="produtos-grid">
-                {% if produtos %}
-                    {% for produto in produtos %}
-                        <div class="produto-card">
-                            {% if produto.imagem_url %}
-                                <img src="{{ url_for('static', filename=produto.imagem_url.lstrip('static/')) }}" alt="{{ produto.titulo }}">
-                            {% else %}
-                            {% endif %}
-                            <h3>{{ produto.titulo }}</h3>
-                            <p><strong>Preço:</strong> R$ {{ "%.2f"|format(produto.preco) }}</p>
-                            <a href="{{ url_for('views.detalhes_produto', produto_id=produto.id) }}" class="btn">Ver Detalhes</a>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <p>Nenhum produto disponível no momento.</p>
-                {% endif %}
-            </div>
+        <h1 class="title">Detalhes do Produto</h1>
+        <section class="produto-details">
+            <img src="{{ url_for('static', filename=produto.imagem_url.lstrip('static/')) }}" alt="{{ produto.titulo }}">
+            <h2>{{ produto.titulo }}</h2>
+            <p><strong>Descrição:</strong> {{ produto.descricao }}</p>
+            <p><strong>Preço:</strong> R$ {{ produto.preco }}</p>
+            <p><strong>Categoria:</strong> {{ produto.categoria }}</p>
+            <p><strong>Cadastrado por:</strong> {{ produto.usuario.nome }} ({{ produto.usuario.email }})</p>
+            <p><strong>Contato:</strong> {{ produto.usuario.contato }}</p>
+            <button class="btn">Contato: {{ produto.usuario.contato }}</button>
         </section>
     </main>
 
@@ -62,7 +52,7 @@
     </footer>
 
     <script>
-        menuMobile()
+        menuMobile();
     </script>
 </body>
 </html>

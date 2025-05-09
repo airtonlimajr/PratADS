@@ -10,6 +10,9 @@ class Usuario(db.Model, UserMixin):
     cidade = db.Column(db.String(100), nullable=True)
     contato = db.Column(db.String(100), nullable=True)
     pets = db.relationship('Pet', backref='doador', lazy=True)
+    descricao = db.Column(db.Text, nullable=True)
+    imagem_url = db.Column(db.String(255), nullable=True)
+    produtos = db.relationship('Produto', backref='usuario', lazy=True)
 
 class Pet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -21,10 +24,13 @@ class Pet(db.Model):
     vacinacao = db.Column(db.String(100), nullable=True)
     localizacao = db.Column(db.String(100), nullable=False)
     doador_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
+    imagem_url = db.Column(db.String(255), nullable=True)
 
-class Produto (db.Model):
+class Produto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(100), nullable=False)
     descricao = db.Column(db.String(100), nullable=False)
     preco = db.Column(db.Float, nullable=False)
     categoria = db.Column(db.String(100), nullable=False)
+    imagem_url = db.Column(db.String(255), nullable=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))

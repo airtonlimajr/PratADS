@@ -5,18 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adote um Pet</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/AdotePet.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <script src="{{ url_for('static', filename='js/menu-mobile.js') }}"></script>
 </head>
 <body>
     <header>
         <div class="container">
-            <h1>Adote um Pet</h1>
+            <h1>We❤️Pet</h1>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <nav>
-                <ul>
+                <ul id="nav-menu">
                     <li><a href="{{ url_for('views.AdotePet') }}">Início</a></li>
                     <li><a href="{{ url_for('views.adicionar_pet') }}">Adicionar Pet</a></li>
                     <li><a href="{{ url_for('views.Loja') }}">Loja</a></li>
                     <li><a href="{{ url_for('views.adicionar_produto') }}">Adicionar Produto</a></li>
-                    <li><a href="{{ url_for('views.Chat') }}">Chat</a></li>
+                    <!--<li><a href="{{ url_for('views.Chat') }}">Chat</a></li>-->
                     <li><a href="{{ url_for('views.perfil') }}">Perfil</a></li>
                     <li><a href="{{ url_for('auth.logout') }}">Sair</a></li>
                 </ul>
@@ -24,11 +31,29 @@
         </div>
     </header>
 
+    <div class="menu-overlay" id="menu-overlay"></div>
+
     <main class="container">
         <section class="pets-list">
             <h2>Pets Disponíveis para Adoção</h2>
-            <div id="pets-container" class="pets-grid">
-                <!-- Os pets serão inseridos aqui pelo JavaScript -->
+            <div class="pets-grid">
+                {% if pets %}
+                    {% for pet in pets %}
+                        <div class="pet-card">
+                            {% if pet.imagem_url %}
+                                <img src="{{ url_for('static', filename=pet.imagem_url.lstrip('static/')) }}" alt="{{ pet.nome }}">
+                            {% else %}
+                            {% endif %}
+                            <h3>{{ pet.nome }}</h3>
+                            <p><strong>Idade:</strong> {{ pet.idade }} anos</p>
+                            <p><strong>Tipo:</strong> {{ pet.tipo }}</p>
+                            <p><strong>Raça:</strong> {{ pet.raca }}</p>
+                            <a href="{{ url_for('views.detalhes_pet', pet_id=pet.id) }}" class="btn">Ver Detalhes</a>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Nenhum pet disponível para adoção no momento.</p>
+                {% endif %}
             </div>
         </section>
     </main>
@@ -42,25 +67,26 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             fetch('/api/pets')
-                .then(response => response.json())
-                .then(pets => {
-                    const petsContainer = document.getElementById('pets-container');
-                    pets.forEach(pet => {
-                        const petCard = document.createElement('div');
-                        petCard.className = 'pet-card';
-                        petCard.innerHTML = `
-                            <h3>${pet.nome}</h3>
-                            <p><strong>Idade:</strong> ${pet.idade} anos</p>
-                            <p><strong>Tipo:</strong> ${pet.tipo}</p>
-                            <p><strong>Raça:</strong> ${pet.raca}</p>
-                            <p><strong>Porte:</strong> ${pet.porte}</p>
-                            <p><strong>Localização:</strong> ${pet.localizacao}</p>
-                        `;
-                        petsContainer.appendChild(petCard);
-                    });
-                })
-                .catch(error => console.error('Erro ao carregar os pets:', error));
+            .then(response => response.json())
+            .then(pets => {
+                const petsContainer = document.getElementById('pets-container');
+                pets.forEach(pet => {
+                    const petCard = document.createElement('div');
+                    petCard.className = 'pet-card';
+                    petCard.innerHTML = `
+                        <h3>${pet.nome}</h3>
+                        <p><strong>Idade:</strong> ${pet.idade} anos</p>
+                        <p><strong>Tipo:</strong> ${pet.tipo}</p>
+                        <p><strong>Raça:</strong> ${pet.raca}</p>
+                        <a href="/pet/${pet.id}" class="btn">Ver Detalhes</a>
+                    `;
+                    petsContainer.appendChild(petCard);
+                });
+            })
+            .catch(error => console.error('Erro ao carregar os pets:', error));
         });
+
+        menuMobile();
     </script>
 </body>
 </html>
